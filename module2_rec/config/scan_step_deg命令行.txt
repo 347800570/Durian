@@ -1,0 +1,19 @@
+python sweep_step_deg.py \
+  --proj_glob "/root/autodl-tmp/data/npy/*.npy" \
+  --out_dir "/root/autodl-tmp/output" \
+  --step_deg_start 0.95 \
+  --step_deg_end 1.05 \
+  --step_deg_step 0.01 \
+  --vol_size 512 \
+  --sod 625 \
+  --sdd 800 \
+  --du 0.14 \
+  --dv 0.14 \
+  --fov_scale_xy 1.0 \
+  --fov_scale_z 1.0 \
+  --fov_mode max \
+  --start_deg 0.0 \
+  --shift_left_px -55 \
+  --bin 1 \
+  --dtype float32 \
+  --filter hann

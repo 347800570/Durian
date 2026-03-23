@@ -1,0 +1,8 @@
+对应文件：python gridrec_recon.py
+
+扫描一组且只保存png
+python gridrec_recon.py --input_dir "D:\Experiment\Durian\7_Gridrec\data\001\preprocess\npy" --output_dir "D:\Experiment\Durian\7_Gridrec\output\scan_all_in_one_001" --center_scan_start 551 --center_scan_end 570 --center_scan_step 1
+
+
+单次重建
+python gridrec_recon.py --input_dir "D:\Experiment\Durian\7_Gridrec\data\002\npy" --output_dir "D:\Experiment\Durian\7_Gridrec\output\002\single\enhance" --center 324

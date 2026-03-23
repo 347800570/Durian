@@ -1,0 +1,22 @@
+python sweep_sod.py \
+    --proj_glob "/root/autodl-tmp/durian/001/data/002/*.npy" \
+    --out_dir "/root/autodl-tmp/durian/001/output/002" \
+    --vol_size 512 \
+    --sod_start 500 \
+    --sod_end 700 \
+    --sod_step 20 \
+    --sdd 800 \
+    --du 0.14 \
+    --dv 0.14 \
+    --fov_scale_xy 1.0 \
+    --fov_scale_z 1.0 \
+    --fov_mode max \
+    --start_deg 0.0 \
+    --step_deg 2.06 \
+    --drop_last_if_361 \
+    --shift_left_px 4 \
+    --bin 1 \
+    --dtype float32 \
+    --filter hann \
+
+

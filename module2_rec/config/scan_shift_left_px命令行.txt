@@ -1,0 +1,19 @@
+python sweep_shift_left_px.py \
+  --proj_glob "/root/autodl-tmp/data/npy/*.npy" \
+  --out_dir "/root/autodl-tmp/output" \
+  --shift_left_px_start 0 \
+  --shift_left_px_end 100 \
+  --shift_left_px_step 10 \
+  --vol_size 512 \
+  --sod 625 \
+  --sdd 800 \
+  --du 0.14 \
+  --dv 0.14 \
+  --fov_scale_xy 1.0 \
+  --fov_scale_z 1.0 \
+  --fov_mode max \
+  --start_deg 0.0 \
+  --step_deg 1.0 \
+  --bin 1 \
+  --dtype float32 \
+  --filter hann
