@@ -1,0 +1,5 @@
+旋转中心扫描：
+python sart_recon.py --input_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\2_preprocess\4_npy" --output_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\3_rec\Sart" --start_slice 370 --end_slice 400 --step_slice 10 --iterations 10 --output_size 768 --cor_scan_start 50 --cor_scan_end 70 --cor_scan_step 5
+
+单值旋转中心
+python sart_recon.py --input_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\2_preprocess\4_npy" --output_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\3_rec\Sart" --start_slice 390 --end_slice 400 --step_slice 10 --iterations 1 --output_size 768 --cor_offset 60
