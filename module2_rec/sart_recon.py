@@ -79,6 +79,27 @@ def parse_args():
         help="Step value for cor_offset scan"
     )
 
+    parser.add_argument(
+        '--relaxation',
+        type=float,
+        default=1.0,
+        help="Relaxation parameter for SART (default: 1.0)"
+    )
+    parser.add_argument(
+        '--projector_type',
+        type=str,
+        default='linear',
+        choices=['linear', 'strip'],
+        help="ASTRA projector type (default: linear)"
+    )
+    parser.add_argument(
+        '--nonnegative_mode',
+        type=str,
+        default='none',
+        choices=['none', 'final', 'per_iteration'],
+        help="Nonnegative constraint mode (default: none)"
+    )
+
     return parser.parse_args()
 
 
@@ -218,8 +239,26 @@ def shift_sinogram_horizontal(sino_slice, cor_offset):
     return shifted.astype(np.float32)
 
 
+def apply_nonnegative_constraint(recon_slice):
+    return np.maximum(recon_slice, 0.0)
+
+
+def run_sart_with_constraint(alg_id, recon_id, total_steps, nonnegative_mode):
+    if nonnegative_mode == 'per_iteration':
+        for _ in range(total_steps):
+            astra.algorithm.run(alg_id, 1)
+            recon_slice = astra.data2d.get(recon_id)
+            recon_slice = apply_nonnegative_constraint(recon_slice)
+            astra.data2d.store(recon_id, recon_slice)
+    else:
+        astra.algorithm.run(alg_id, total_steps)
+
+
 def main():
     args = parse_args()
+
+    if args.relaxation <= 0:
+        raise ValueError(f"Invalid relaxation: {args.relaxation}. Must be > 0.")
 
     proj, angle_indices = load_projection_stack_with_angles(args.input_dir)
     proj, used_angle_indices, angles = prepare_parallel_unique_180(proj, angle_indices)
@@ -247,6 +286,9 @@ def main():
         f"Reconstructing slices from {args.start_slice} to {args.end_slice - 1} "
         f"with step {args.step_slice}..."
     )
+    print(f"Projector type: {args.projector_type}")
+    print(f"Relaxation: {args.relaxation}")
+    print(f"Nonnegative mode: {args.nonnegative_mode}")
 
     for cor_offset in cor_offsets:
         cor_label = format_cor_value(cor_offset, cor_decimals)
@@ -262,7 +304,7 @@ def main():
             proj_geom = astra.create_proj_geom('parallel', det_spacing, W, angles)
             vol_geom = astra.create_vol_geom(args.output_size, args.output_size)
 
-            projector_id = astra.create_projector('linear', proj_geom, vol_geom)
+            projector_id = astra.create_projector(args.projector_type, proj_geom, vol_geom)
             sinogram_id = astra.data2d.create('-sino', proj_geom, sino_slice_shifted)
             recon_id = astra.data2d.create('-vol', vol_geom, 0)
 
@@ -270,11 +312,23 @@ def main():
             cfg['ProjectorId'] = projector_id
             cfg['ProjectionDataId'] = sinogram_id
             cfg['ReconstructionDataId'] = recon_id
+            cfg['option'] = cfg.get('option', {})
+            cfg['option']['Relaxation'] = float(args.relaxation)
+
             alg_id = astra.algorithm.create(cfg)
 
-            astra.algorithm.run(alg_id, args.iterations * n_theta)
+            total_steps = args.iterations * n_theta
+            run_sart_with_constraint(
+                alg_id=alg_id,
+                recon_id=recon_id,
+                total_steps=total_steps,
+                nonnegative_mode=args.nonnegative_mode
+            )
 
             recon_slice = astra.data2d.get(recon_id)
+
+            if args.nonnegative_mode == 'final':
+                recon_slice = apply_nonnegative_constraint(recon_slice)
 
             astra.algorithm.delete(alg_id)
             astra.data2d.delete(sinogram_id)

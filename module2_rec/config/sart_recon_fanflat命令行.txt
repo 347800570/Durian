@@ -1,0 +1,20 @@
+python sart_recon_fanflat.py ^
+  --input_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\2_preprocess\4_npy" ^
+  --output_dir "D:\Experiment\Durian\project_CTrec\data\Durian_002_20260316\3_rec\Sart\scan_fanflat" ^
+  --start_slice 390 ^
+  --end_slice 391 ^
+  --step_slice 1 ^
+  --iterations 1 ^
+  --relaxation 0.3 ^
+  --parallel_projector_type strip ^
+  --fanflat_projector_type line_fanflat ^
+  --nonnegative_mode per_iteration ^
+  --cor_offset 60 ^
+  --scan_fanflat ^
+  --source_origin_scan_start 300 ^
+  --source_origin_scan_end 700 ^
+  --source_origin_scan_step 100 ^
+  --origin_det_scan_start 300 ^
+  --origin_det_scan_end 700 ^
+  --origin_det_scan_step 100 ^
+  --save_parallel_baseline
